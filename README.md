@@ -1,14 +1,16 @@
-# Rio Grande — Mapa de Nodes HFC
+# Painel Geográfico de Nodes – Rio Grande
 
-Aplicação Streamlit.
+Clone operacional do painel funcional de Porto Alegre, adaptado somente para a base geográfica/nodes de Rio Grande e coleta XPERTrack no Google Drive.
 
-## Arquivo principal
-`streamlit_app.py`
+## Publicação
+Main file path: `streamlit_app.py`
 
-## Atualização da coleta
-O app lê `RIO GRANDE.csv` diretamente do Google Drive pelo ID fixo do arquivo.
+## Coleta
+O app lê o arquivo fixo `RIO GRANDE.csv` do Google Drive. Para leitura pelo Streamlit Cloud, mantenha o arquivo acessível como **Qualquer pessoa com o link — Leitor** e preserve o mesmo arquivo/ID nas atualizações.
 
-Para o Streamlit Cloud conseguir ler o CSV, o arquivo deve estar com:
-**Qualquer pessoa com o link → Leitor**.
+## Regras XPERTrack
+- 0 = OFF
+- 1–20 = porta crítica/degradada
+- acima de 20 = online
 
-Ao atualizar, substitua o conteúdo do mesmo arquivo no Drive para preservar o ID.
+A interface, cards, visão de crise, filtros, ranking, mapa, popups, tratativas, outages, histórico e demais recursos seguem a matriz de Porto Alegre.

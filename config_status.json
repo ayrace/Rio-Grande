@@ -1,0 +1,6 @@
+{
+  "crisis_threshold": 50,
+  "refresh_minutes": 60,
+  "stale_after_minutes": 90,
+  "degraded_threshold": 20
+}
