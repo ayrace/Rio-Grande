@@ -406,7 +406,10 @@ def load_base() -> pd.DataFrame:
         if c not in df.columns: df[c]=""
         df[c]=df[c].fillna("").astype(str)
     df["Node"] = df["Node"].map(norm_txt); df["Origem"] = df["Origem"].map(norm_txt); df["RX"] = df["RX"].map(norm_txt)
-    # Proteção contra base antiga: TRVABA3 é porta 3 do TRVABA, nunca node físico.
+    # RG V6: filtro operacional definitivo. CNTAA é cadastro geográfico duplicado
+    # e não pode ser recriado por base antiga/cache. CNTAAA e CNTAAB permanecem.
+    df = df[df["Node"] != "CNTAA"].copy()
+    # TRVABA3 é porta 3 do TRVABA, nunca node físico.
     df["Node"] = df["Node"].replace({"TRVABA3": "TRVABA"})
     df = df.drop_duplicates("Node", keep="first").copy()
     df["Latitude"] = pd.to_numeric(df["Latitude"], errors="coerce"); df["Longitude"] = pd.to_numeric(df["Longitude"], errors="coerce")
@@ -1700,6 +1703,8 @@ def render_map(df=None,height=535,assigned_only=False):
     else:
         center_lat=float(d["Latitude"].mean()); center_lon=float(d["Longitude"].mean()); zoom=11.0 if assigned_only else 10.65
 
+    # RG V6: última barreira antes da renderização do mapa.
+    d = d[d["Node"].map(norm_txt) != "CNTAA"].copy()
     layers=[]; affected=d[d["Portas_OFF"]>0].copy()
     if crisis_mode and not affected.empty:
         affected["weight"]=affected["Portas_OFF"].clip(lower=1)+affected["Status"].map({"OFF TOTAL":3,"PARCIAL CRÍTICO":2,"PARCIAL":2}).fillna(1)
