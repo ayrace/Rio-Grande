@@ -26,3 +26,5 @@ A interface, cards, visão de crise, filtros, ranking, mapa, popups, tratativas,
 ## Ajuste final
 - CTAA removido da base geográfica por duplicidade confirmada.
 - CNTAAA preservado no ponto correto, consolidando CNTAAA-1/2/3/4.
+
+- Ajuste V5: removido exclusivamente o marcador geográfico duplicado CNTAA; CNTAAA e CNTAAB preservados.
