@@ -63,7 +63,6 @@ UNI_NODES = {"SRDAJ", "SRDAG", "SRDAE", "SRDAC", "SRDAB", "VNVAT"}
 
 # Correções de identidade: somente casos explicitamente validados.
 IDENTITY_ALIAS_OVERRIDES = {
-    "TRVACD": "TRVACC",
     "PRTAN": "PRTANA",
     "VJDALA": "VJDAL",
     "JCVAGA": "JCVAG",
@@ -141,8 +140,15 @@ def split_node_port(v, known_bases=None):
     - INT1A..INT6A, que são os nodes atuais INT1..INT6 do Beira-Rio, cada um com uma leitura.
     """
     s = norm_txt(v)
-    if s == "TRVABA3":
-        return "TRVABA", 3
+
+    # Rio Grande: cadastro do XPERTrack sem hífen na porta 3.
+    # TRVABA3 NÃO é um node: é o node TRVABA, porta 3.
+    RG_COMPACT_PORTS = {"TRVABA3": ("TRVABA", 3)}
+    if s in RG_COMPACT_PORTS:
+        return RG_COMPACT_PORTS[s]
+
+    # Formato normal: NODE-1, NODE-2... Mantém TRVACD e TRVACC
+    # como identidades totalmente independentes.
     m = re.match(r"^(.+?)[\s_\-/]+([1-4])$", s)
     if m:
         return m.group(1).strip(), int(m.group(2))
@@ -400,6 +406,9 @@ def load_base() -> pd.DataFrame:
         if c not in df.columns: df[c]=""
         df[c]=df[c].fillna("").astype(str)
     df["Node"] = df["Node"].map(norm_txt); df["Origem"] = df["Origem"].map(norm_txt); df["RX"] = df["RX"].map(norm_txt)
+    # Proteção contra base antiga: TRVABA3 é porta 3 do TRVABA, nunca node físico.
+    df["Node"] = df["Node"].replace({"TRVABA3": "TRVABA"})
+    df = df.drop_duplicates("Node", keep="first").copy()
     df["Latitude"] = pd.to_numeric(df["Latitude"], errors="coerce"); df["Longitude"] = pd.to_numeric(df["Longitude"], errors="coerce")
     return df
 
@@ -1336,8 +1345,8 @@ header_warn = f' • sem atualização há <b>{int(age_min)} min</b>' if is_stal
 st.markdown(
     f'<div class="topbar">'
     f'<div class="title-wrap">'
-    f'<h1>Mapa de Nodes HFC – Rio Grande</h1>'
-    f'<div class="sub">XPERTrack • Pontuação por porta</div>'
+    f'<h1>Painel Geográfico de Nodes – Rio Grande</h1>'
+    f'<div class="sub">XPERTrack • Pontuação por porta • RG V3</div>'
     f'<div class="header-meta">Fonte XPERTrack: {esc(updated_txt)}{header_warn}' + (f' • arquivo: {esc(source_file_name)}' if source_file_name else '') + '</div>'
     f'</div></div>',
     unsafe_allow_html=True,

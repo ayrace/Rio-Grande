@@ -14,3 +14,10 @@ O app lê o arquivo fixo `RIO GRANDE.csv` do Google Drive. Para leitura pelo Str
 - acima de 20 = online
 
 A interface, cards, visão de crise, filtros, ranking, mapa, popups, tratativas, outages, histórico e demais recursos seguem a matriz de Porto Alegre.
+
+
+## Correções validadas de topologia
+- TRVABA = 1x4; `TRVABA3` é a porta 3 de TRVABA.
+- TRVACD = 1x2 e é independente.
+- TRVACC = 1x4 e é independente.
+- TRVACD e TRVACC nunca são agrupados.
