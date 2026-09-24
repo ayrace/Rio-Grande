@@ -21,3 +21,8 @@ A interface, cards, visão de crise, filtros, ranking, mapa, popups, tratativas,
 - TRVACD = 1x2 e é independente.
 - TRVACC = 1x4 e é independente.
 - TRVACD e TRVACC nunca são agrupados.
+
+
+## Ajuste final
+- CTAA removido da base geográfica por duplicidade confirmada.
+- CNTAAA preservado no ponto correto, consolidando CNTAAA-1/2/3/4.
