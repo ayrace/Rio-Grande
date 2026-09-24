@@ -451,11 +451,19 @@ def load_table_bytes(data: bytes, name_hint: str):
     except Exception: return read_excel_bytes(data)
 
 
-@st.cache_data(ttl=300, show_spinner=False)
-def fetch_remote_bytes(url: str, token: str=""):
-    headers={"User-Agent":"Painel-Nodes-RG/10.0.1"}
+@st.cache_data(ttl=60, show_spinner=False)
+def fetch_remote_bytes(url: str, token: str="", refresh_key: str=""):
+    # RG V7: força nova consulta ao Google Drive. O arquivo mantém o mesmo ID
+    # quando uma nova versão é enviada, então a URL fixa pode ser cacheada.
+    headers={
+        "User-Agent":"Painel-Nodes-RG/10.0.2",
+        "Cache-Control":"no-cache, no-store, max-age=0",
+        "Pragma":"no-cache",
+    }
     if token: headers["Authorization"]=f"Bearer {token}"
-    r=requests.get(url, headers=headers, timeout=35); r.raise_for_status()
+    sep="&" if "?" in url else "?"
+    bust_url=f"{url}{sep}_rg_refresh={refresh_key}" if refresh_key else url
+    r=requests.get(bust_url, headers=headers, timeout=35, allow_redirects=True); r.raise_for_status()
     return r.content, r.headers.get("Last-Modified","")
 
 
@@ -1009,7 +1017,8 @@ if False and gh["repo"] and gh["token"]:
 # Fonte remota explícita continua disponível como fallback/alternativa.
 if xraw is None and remote_url:
     try:
-        raw,last_mod=fetch_remote_bytes(remote_url,remote_token); hint=remote_url.split("?")[0].split("/")[-1] or "xpertrack.csv"; xraw=load_table_bytes(raw,hint); source_file_name=hint
+        refresh_key=now_poa().strftime("%Y%m%d%H%M")
+        raw,last_mod=fetch_remote_bytes(remote_url,remote_token,refresh_key); hint="RIO GRANDE.csv"; xraw=load_table_bytes(raw,hint); source_file_name=hint
         if last_mod:
             try: source_updated_at=parsedate_to_datetime(last_mod)
             except Exception: pass
@@ -1349,7 +1358,7 @@ st.markdown(
     f'<div class="topbar">'
     f'<div class="title-wrap">'
     f'<h1>Painel Geográfico de Nodes – Rio Grande</h1>'
-    f'<div class="sub">XPERTrack • Pontuação por porta • RG V3</div>'
+    f'<div class="sub">XPERTrack • Pontuação por porta • RG V7</div>'
     f'<div class="header-meta">Fonte XPERTrack: {esc(updated_txt)}{header_warn}' + (f' • arquivo: {esc(source_file_name)}' if source_file_name else '') + '</div>'
     f'</div></div>',
     unsafe_allow_html=True,

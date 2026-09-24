@@ -28,3 +28,5 @@ A interface, cards, visão de crise, filtros, ranking, mapa, popups, tratativas,
 - CNTAAA preservado no ponto correto, consolidando CNTAAA-1/2/3/4.
 
 - Ajuste V5: removido exclusivamente o marcador geográfico duplicado CNTAA; CNTAAA e CNTAAB preservados.
+
+- V7: leitura do RIO GRANDE.csv com cache-buster a cada minuto e headers no-cache para reconhecer novas versões do mesmo arquivo no Google Drive.
