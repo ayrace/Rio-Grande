@@ -30,3 +30,10 @@ A interface, cards, visão de crise, filtros, ranking, mapa, popups, tratativas,
 - Ajuste V5: removido exclusivamente o marcador geográfico duplicado CNTAA; CNTAAA e CNTAAB preservados.
 
 - V7: leitura do RIO GRANDE.csv com cache-buster a cada minuto e headers no-cache para reconhecer novas versões do mesmo arquivo no Google Drive.
+
+
+## V8 DEFINITIVA — atualização pelo Drive
+Arquivo monitorado: RIO GRANDE.csv
+Drive file ID: 1fTIL3IXtJsV6d9OvT1pxcqoYJmcWnXor
+
+IMPORTANTE: não apagar o arquivo do Drive para atualizar a coleta. Enviar/substituir como nova versão do mesmo arquivo. Assim o ID permanece fixo e o painel lê a coleta nova automaticamente. A leitura remota usa cache de no máximo 60 segundos e cache-busting HTTP.

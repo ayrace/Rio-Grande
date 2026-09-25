@@ -453,10 +453,10 @@ def load_table_bytes(data: bytes, name_hint: str):
 
 @st.cache_data(ttl=60, show_spinner=False)
 def fetch_remote_bytes(url: str, token: str="", refresh_key: str=""):
-    # RG V7: força nova consulta ao Google Drive. O arquivo mantém o mesmo ID
+    # RG V8 DEFINITIVA: força nova consulta ao Google Drive. O arquivo mantém o mesmo ID
     # quando uma nova versão é enviada, então a URL fixa pode ser cacheada.
     headers={
-        "User-Agent":"Painel-Nodes-RG/10.0.2",
+        "User-Agent":"Painel-Nodes-RG/10.0.3",
         "Cache-Control":"no-cache, no-store, max-age=0",
         "Pragma":"no-cache",
     }
@@ -997,7 +997,7 @@ def find_best_xpertrack_file():
     return chosen,upd
 
 base=load_base(); reg_map=load_region_map()
-remote_url=get_secret("XPERTRACK_DATA_URL","https://drive.google.com/uc?export=download&id=1khmqXK9bpeTub9eXgluJrkCYm8491sCY").strip(); remote_token=get_secret("XPERTRACK_BEARER_TOKEN","").strip(); source_name=get_secret("DATA_SOURCE_NAME","XPERTrack").strip() or "XPERTrack"
+remote_url=get_secret("XPERTRACK_DATA_URL","https://drive.google.com/uc?export=download&id=1fTIL3IXtJsV6d9OvT1pxcqoYJmcWnXor").strip(); remote_token=get_secret("XPERTRACK_BEARER_TOKEN","").strip(); source_name=get_secret("DATA_SOURCE_NAME","XPERTrack").strip() or "XPERTrack"
 xraw=None; source_updated_at=None; source_file_name=""
 
 # No Streamlit Cloud, lê primeiro a pasta data diretamente do GitHub usando o
@@ -1358,7 +1358,7 @@ st.markdown(
     f'<div class="topbar">'
     f'<div class="title-wrap">'
     f'<h1>Painel Geográfico de Nodes – Rio Grande</h1>'
-    f'<div class="sub">XPERTrack • Pontuação por porta • RG V7</div>'
+    f'<div class="sub">XPERTrack • Pontuação por porta • RG V8 DEFINITIVA</div>'
     f'<div class="header-meta">Fonte XPERTrack: {esc(updated_txt)}{header_warn}' + (f' • arquivo: {esc(source_file_name)}' if source_file_name else '') + '</div>'
     f'</div></div>',
     unsafe_allow_html=True,
