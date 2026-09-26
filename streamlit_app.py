@@ -232,6 +232,8 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stApp"] { backgrou
 .title-wrap .sub { color:#4b5d7d; font-size:13px; margin-top:6px; font-weight:650; }
 .header-meta { margin-top:4px; color:#60708f; font-size:12.5px; line-height:1.45; }
 .header-meta .warn-inline { color:#8a6811 !important; }
+.header-refresh { display:inline-block; margin-left:8px; padding:4px 10px; border-radius:8px; background:#0c66d6; color:#fff !important; text-decoration:none !important; font-weight:750; font-size:10.5px; line-height:1.2; vertical-align:middle; }
+.header-refresh:hover { background:#0958b8; color:#fff !important; }
 .sys { display:none; }
 .dot { display:none; }
 .dot.wait { display:none; }
@@ -453,7 +455,7 @@ def load_table_bytes(data: bytes, name_hint: str):
 
 @st.cache_data(ttl=60, show_spinner=False)
 def fetch_remote_bytes(url: str, token: str="", refresh_key: str=""):
-    # RG V8 DEFINITIVA: força nova consulta ao Google Drive. O arquivo mantém o mesmo ID
+    # RG V9: força nova consulta ao Google Drive. O arquivo mantém o mesmo ID
     # quando uma nova versão é enviada, então a URL fixa pode ser cacheada.
     headers={
         "User-Agent":"Painel-Nodes-RG/10.0.3",
@@ -1358,8 +1360,8 @@ st.markdown(
     f'<div class="topbar">'
     f'<div class="title-wrap">'
     f'<h1>Painel Geográfico de Nodes – Rio Grande</h1>'
-    f'<div class="sub">XPERTrack • Pontuação por porta • RG V8 DEFINITIVA</div>'
-    f'<div class="header-meta">Fonte XPERTrack: {esc(updated_txt)}{header_warn}' + (f' • arquivo: {esc(source_file_name)}' if source_file_name else '') + '</div>'
+    f'<div class="sub">XPERTrack • Pontuação por porta • RG V9</div>'
+    f'<div class="header-meta">Fonte XPERTrack: {esc(updated_txt)}{header_warn}' + (f' • arquivo: {esc(source_file_name)}' if source_file_name else '') + ' <a class="header-refresh" href="?atualizar=operacional" target="_self">Atualizar</a></div>'
     f'</div></div>',
     unsafe_allow_html=True,
 )
@@ -1499,10 +1501,13 @@ def check_tech_access():
 # -----------------------------
 def render_kpis():
     off_sub=(f"{mapped_ports_off} localizadas" + (f" • {ports_off_unmapped} sem localização" if ports_off_unmapped else "")) if ports_off is not None else "aguardando XPERTrack"
-    outages_action='<a class="kpi-action" href="?atualizar=operacional" target="_self">Atualizar</a>'
     cards=[
         kpi_html("Portas OFF",fmt_int(ports_off),off_sub,"kpi-red"),
-        kpi_html("Outages sem sinal",fmt_int(outages_current) if outages_current is not None else "—",outages_action,"kpi-blue",sub_is_html=True),
+    ]
+    # Outages sem sinal só ocupa espaço quando houver ocorrência ativa.
+    if outages_current is not None and int(outages_current) > 0:
+        cards.append(kpi_html("Outages sem sinal",fmt_int(outages_current),"outages ativos","kpi-blue"))
+    cards += [
         kpi_html("Sem sinal total",fmt_int(off_total),"todas as portas existentes OFF","kpi-red"),
         kpi_html("Sem sinal parcial",fmt_int(parcial),"1 ou mais portas OFF, sem perda total","kpi-yellow"),
         kpi_html("Portas críticas",fmt_int(ports_critical),"pontuação de 1 a 20","kpi-yellow"),
